@@ -1,0 +1,59 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Chat</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      body {
+        margin-top: 2em;
+      }
+      li {
+        font-size: 1.25em;
+      }
+      li:nth-child(odd) {
+        background-color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="jumbotron col-md-10 col-md-offset-1">
+          <ul class="list-unstyled" id="messages"></ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <div class="container">
+        <div class="row col-md-10 col-md-offset-1">
+          <form action="">
+            <div class="col-md-11">
+              <input id="m" class="form-control" autocomplete="off" required autofocus />
+            </div>
+            <button class="btn btn-success col-md-1">Send</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.7.3/socket.io.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    <script>
+      $(function() {
+        var socket = io();
+
+        $('form').submit(function() {
+          socket.emit('chat msg', $.cookie('username'), $('#m').val());
+          $('#m').val('');
+          return false;
+        });
+
+        socket.on('chat msg', function(username, msg) {
+          $('#messages').append($('<li>').html('<strong>' + username + '</strong>: ' + msg));
+          window.scrollTo(0, document.body.scrollHeight);
+        });
+      });
+    </script>
+  </body>
+</html>
